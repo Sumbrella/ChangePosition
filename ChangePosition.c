@@ -9,7 +9,6 @@
 # include <stdio.h>
 # include <math.h>
 
-#define PI 3.141592653589
 #define MAX_N 1010
 
 typedef long long ll;
