@@ -50,7 +50,7 @@ void getLBH(double X, double Y, double Z, double *pN, double *pL, double *pB, do
         B = nB;
     }
     double N = a / sqrt(1 - e * e * sin(B) * sin(B));
-    double L = atan(Y / X);
+    double L = atan2(Y, X);
     double H = R / cos(B) - N;
     
     *pN = N; *pL = L; *pB = B; *pH = H;
