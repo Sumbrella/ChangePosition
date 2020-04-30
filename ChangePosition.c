@@ -4,7 +4,8 @@
 //
 //  Created by Sumbrella on 2020/4/28.
 //  Copyright © 2020 Sumbrella All rights reserved.
-//
+//  This branch can read datafile saved as .csv
+
 # include <stdio.h>
 # include <math.h>
 
@@ -32,10 +33,18 @@ double Forward(double B)
 }
 
 
-void inputXYZ(double *X,double *Y, double *Z)
+void fileinputXYZ(double *X,double *Y, double *Z)
 {
-    printf("请输入X，Y，Z的值>>>（空格隔开）");
-    scanf("%lf %lf %lf", X, Y, Z);
+    FILE* p = open("cases.txt");
+    if (p == NULL)
+	{
+		printf("File Read Error!\n");
+		exit(0);
+	}
+	char s[0xffff];
+	fscanf("%[^\n] ", s);
+    fscanf("%f,%f,%f,\n", X, Y, Z");
+	
 }
 
 
@@ -76,12 +85,13 @@ void showXYZ(double N, double L, double B, double H)
 
 int main()
 {
+
     double X, Y, Z;
     double N, L, B, H;                // 定义变量
 
-    inputXYZ(&X, &Y, &Z);             // 获取XYZ的值
+    fileInputXYZ(&X, &Y, &Z);            // 获取XYZ的值
 
-    configure(X, Y, Z);               // 配置参数
+	configure(X, Y, Z);               // 配置参数
 
     getLBH(X, Y, Z, &N, &L, &B, &H);  // 计算LBH的值
 
