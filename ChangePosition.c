@@ -9,6 +9,9 @@
 # include <stdio.h>
 # include <math.h>
 
+#define PI 3.141592653589
+#define MAX_N 1010
+
 typedef long long ll;
 
 const ll a = 6378137;
@@ -33,20 +36,28 @@ double Forward(double B)
 }
 
 
-void fileinputXYZ(double *X,double *Y, double *Z)
+void fileInputXYZ(double X[MAX_N], double Y[MAX_N], double Z[MAX_N], int *n)
 {
-    FILE* p = open("cases.txt");
-    if (p == NULL)
+    FILE* fp = fopen("cases.txt", "r");
+    if (fp == NULL)
 	{
 		printf("File Read Error!\n");
-		exit(0);
+        return;
 	}
 	char s[0xffff];
-	fscanf("%[^\n] ", s);
-    fscanf("%f,%f,%f,\n", X, Y, Z");
-	
+	fscanf(fp, "%s\n ", s); //跳过第一行
+	int i = 0;
+	while (fscanf(fp, "%lf,%lf,%lf,\n", &X[i], &Y[i], &Z[i]) == 3)
+		i++;
+	*n = i;
 }
 
+void showCase(double X, double Y, double Z, int kase)
+{
+    printf("------------------------------------------\n");
+    printf("Case<%d>\n", kase);
+    printf("当前读取到的数据为：\nX = %f, Y = %f, Z = %f\n", X, Y, Z);
+}
 
 void getLBH(double X, double Y, double Z, double *pN, double *pL, double *pB, double *pH)
 {
@@ -58,10 +69,11 @@ void getLBH(double X, double Y, double Z, double *pN, double *pL, double *pB, do
             break;
         B = nB;
     }
+    if (X < 0 && Y < 0)
+        B = -B;
     double N = a / sqrt(1 - e * e * sin(B) * sin(B));
     double L = atan(Y / X);
     double H = R / cos(B) - N;
-    
     *pN = N; *pL = L; *pB = B; *pH = H;
 }
 
@@ -85,20 +97,26 @@ void showXYZ(double N, double L, double B, double H)
 
 int main()
 {
-
-    double X, Y, Z;
+	int n = 0;
+    double AX[MAX_N], AY[MAX_N], AZ[MAX_N];
     double N, L, B, H;                // 定义变量
 
-    fileInputXYZ(&X, &Y, &Z);            // 获取XYZ的值
+    fileInputXYZ(AX, AY, AZ, &n);     // 获取XYZ的值
 
-	configure(X, Y, Z);               // 配置参数
+	for (int i = 0; i < n; i++)
+	{
+        double X = AX[i],  Y = AY[i], Z = AZ[i];
+        
+		configure(X, Y, Z);               // 配置参数
+        
+        showCase(X, Y, Z, i + 1);         // 打印Case头
+        
+		getLBH(X, Y, Z, &N, &L, &B, &H);  // 计算LBH的值
+        
+		showLBH(L, B, H);                 // 输出LBH的值
 
-    getLBH(X, Y, Z, &N, &L, &B, &H);  // 计算LBH的值
-
-    showLBH(L, B, H);                 // 输出LBH的值
-
-    showXYZ(N, L, B, H);              // 输出计算得到的XYZ的值
-
+		showXYZ(N, L, B, H);              // 输出计算得到的XYZ的值
+	}
     
     return 0;
 }
