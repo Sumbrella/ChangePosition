@@ -69,8 +69,6 @@ void getLBH(double X, double Y, double Z, double *pN, double *pL, double *pB, do
             break;
         B = nB;
     }
-    if (X < 0 && Y < 0)
-        B = -B;
     double N = a / sqrt(1 - e * e * sin(B) * sin(B));
     double L = atan(Y / X);
     double H = R / cos(B) - N;
